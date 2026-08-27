@@ -1,0 +1,24 @@
+---
+# ForensiDrive SystemRescue configuration fragment
+#
+# Copy this file onto the SystemRescue boot device as:
+#   sysrescue.d/forensidrive.yaml
+#
+# Documented scopes used here:
+#   global.dostartx     - start the graphical environment
+#   gui_autostart       - start programs when the graphical desktop comes up
+#
+# References:
+#   https://www.system-rescue.org/manual/Configuring_SystemRescue/
+#   https://www.system-rescue.org/manual/gui_autostart_Start_programs_on_graphical_desktop/
+#
+# TODO: Confirm the installed path of ForensiDrive on your customized ISO.
+# TODO: If python3 is not on PATH in the live session, change exec to an absolute interpreter.
+# TODO: Do not add undocumented SystemRescue keys. Merge with your existing sysrescue.d files.
+
+global:
+  dostartx: true
+
+gui_autostart:
+  forensidrive:
+    exec: "python3 /usr/local/forensidrive/app/main.py"

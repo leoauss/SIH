@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=ForensiDrive
+Comment=Storage recovery and erasure for SystemRescue
+Exec=python3 /usr/local/forensidrive/app/main.py
+Icon=drive-harddisk
+Terminal=false
+Categories=System;
+StartupNotify=true
+X-GNOME-Autostart-enabled=true
