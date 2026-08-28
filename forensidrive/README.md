@@ -33,18 +33,22 @@ ForensiDrive is an integrated forensic recovery and secure data sanitization pla
 
 ## Running ForensiDrive
 
-### On Linux / SystemRescue
-`ash
-python3 app/main.py
-`
+### On Linux / SystemRescue (Physical Drives)
+```bash
+sudo python3 app/main.py
+```
 
-### On Windows / Development Demo Mode
-`ash
-set FORENSIDRIVE_DEMO=1
-python app/main.py
-`
+### Demo / Simulation Mode (Simulated Drives)
+```bash
+python3 app/main.py --demo
+```
+
+### On Windows
+```bash
+python app/main.py --demo
+```
 
 ### Running Automated Test Suite
-`ash
+` ash
 python -m unittest discover -s tests -v
 `
