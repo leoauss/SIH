@@ -1,3 +1,4 @@
+import os
 import threading
 import tkinter as tk
 from tkinter import ttk
@@ -7,7 +8,7 @@ from core.classifier import ClassificationReport, classify_directory
 from core.errors import MissingCommandError, UserCancelledError
 from core.evidence import create_case_id, hash_destination_tree, hash_source, write_chain_of_custody
 from core.process import ProcessRunner
-from integrations.recovery_tools import RecoveryMethod, build_command
+from integrations.recovery_tools import RecoveryMethod, build_command, prepare_destination
 from models.audit_event import AuditEvent
 from models.drive import Drive
 from models.operation import Operation, OperationStatus
@@ -120,13 +121,19 @@ class RecoveryScanView(tk.Frame):
         self.banner.show("Carving files from storage media. This may take some time.", "info")
 
         try:
-            argv = build_command(self.method, self.drive, dest)
+            actual_dest = prepare_destination(self.method.id, dest)
+            argv = build_command(self.method, self.drive, actual_dest)
+            # Update dest to the actual output path used
+            self.destination.set(actual_dest)
+            self.operation.destination = actual_dest
         except Exception as exc:
             self._finish_failed("We couldn't start recovery.", str(exc))
             return
 
+        self.details.append_line("Recovery command: %s" % " ".join(argv))
+
         try:
-            self.runner.start(argv, self.operation, on_line=self._on_line, on_done=lambda op: self._step3_classify(op, dest))
+            self.runner.start(argv, self.operation, on_line=self._on_line, on_done=lambda op: self._step3_classify(op, actual_dest))
         except MissingCommandError as exc:
             self._finish_failed(exc.user_message, exc.combined_technical())
 

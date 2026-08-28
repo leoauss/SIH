@@ -51,6 +51,7 @@ class ProcessRunner:
             try:
                 proc = subprocess.Popen(
                     list(argv),
+                    stdin=subprocess.DEVNULL,
                     stdout=subprocess.PIPE,
                     stderr=subprocess.STDOUT,
                     cwd=cwd,

@@ -75,6 +75,27 @@ def get_method(method_id: str) -> RecoveryMethod:
     raise KeyError(method_id)
 
 
+def prepare_destination(method_id: str, destination: str) -> str:
+    """
+    Prepare the output directory for a recovery method.
+    Foremost requires the output directory to NOT exist, so we create
+    a unique subdirectory. PhotoRec handles existing dirs fine.
+    Returns the actual output path to use.
+    """
+    import os
+    from datetime import datetime
+    if method_id == "foremost_common":
+        # Foremost refuses to run if output dir already exists.
+        # Create a unique subdirectory inside the user's chosen folder.
+        ts = datetime.now().strftime("%Y%m%d_%H%M%S")
+        actual_dest = os.path.join(destination, "foremost_%s" % ts)
+        # Do NOT create it — foremost creates it itself and fails if it exists.
+        return actual_dest
+    # For PhotoRec, ensure the directory exists
+    os.makedirs(destination, exist_ok=True)
+    return destination
+
+
 def build_command(method: RecoveryMethod, drive: Drive, destination: str, partition_path: Optional[str] = None) -> List[str]:
     source = partition_path or drive.path
     if method.id == "photorec_common":
@@ -88,5 +109,5 @@ def build_command(method: RecoveryMethod, drive: Drive, destination: str, partit
             "search",
         ]
     if method.id == "foremost_common":
-        return ["foremost", "-t", "all", "-i", source, "-o", destination]
+        return ["foremost", "-v", "-t", "all", "-i", source, "-o", destination]
     raise RuntimeError("No command is defined for recovery method %s" % method.id)
