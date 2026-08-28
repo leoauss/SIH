@@ -11,9 +11,12 @@ class DashboardView(tk.Frame):
     def __init__(self, master, app):
         super().__init__(master, bg=Theme.BG)
         self.app = app
-        tk.Label(self, text="What do you want to do?", bg=Theme.BG, fg=Theme.TEXT, font=(Theme.FONT, 22, "bold")).pack(anchor="w", pady=(0, 8))
+        body = ScrollBody(self)
+        body.pack(fill="both", expand=True)
+
+        tk.Label(body.inner, text="What do you want to do?", bg=Theme.BG, fg=Theme.TEXT, font=(Theme.FONT, 22, "bold")).pack(anchor="w", pady=(0, 8))
         tk.Label(
-            self,
+            body.inner,
             text="Choose one of the options below. You do not need to type any drive names.",
             bg=Theme.BG,
             fg=Theme.MUTED,
@@ -31,13 +34,13 @@ class DashboardView(tk.Frame):
             ("View Audit Log", "See a record of all operations and generate forensic reports.", self.app.show_audit, False),
         ]
         for title, summary, command, danger in actions:
-            card = tk.Frame(self, bg=Theme.SURFACE)
+            card = tk.Frame(body.inner, bg=Theme.SURFACE)
             card.pack(fill="x", pady=8)
             tk.Label(card, text=title, bg=Theme.SURFACE, fg=Theme.TEXT, font=(Theme.FONT, 16, "bold")).pack(anchor="w", padx=18, pady=(14, 4))
             tk.Label(card, text=summary, bg=Theme.SURFACE, fg=Theme.MUTED, font=(Theme.FONT, 12), wraplength=800, justify="left").pack(anchor="w", padx=18)
             PrimaryButton(card, "Open", command=command, danger=danger).pack(anchor="w", padx=18, pady=14)
 
-        GhostButton(self, "Close ForensiDrive", command=self.app.root.destroy).pack(anchor="w", pady=20)
+        GhostButton(body.inner, "Close ForensiDrive", command=self.app.root.destroy).pack(anchor="w", pady=20)
 
 
 class SystemInfoView(tk.Frame):

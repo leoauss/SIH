@@ -21,8 +21,42 @@ class ScrollBody(ttk.Frame):
         self.scrollbar.pack(side="right", fill="y")
         self.canvas.bind("<Configure>", self._stretch)
 
+        # Cross-platform mouse wheel scrolling (Linux X11 Button-4/5 + Windows/macOS MouseWheel)
+        self.bind("<Enter>", self._bind_mousewheel)
+        self.bind("<Leave>", self._unbind_mousewheel)
+        self.canvas.bind("<Enter>", self._bind_mousewheel)
+        self.canvas.bind("<Leave>", self._unbind_mousewheel)
+        self.inner.bind("<Enter>", self._bind_mousewheel)
+        self.inner.bind("<Leave>", self._unbind_mousewheel)
+        self.bind("<Destroy>", self._unbind_mousewheel)
+
     def _stretch(self, event):
         self.canvas.itemconfigure(self._window, width=event.width)
+
+    def _bind_mousewheel(self, _event=None):
+        # Linux X11 mouse wheel events
+        self.bind_all("<Button-4>", self._on_wheel_up)
+        self.bind_all("<Button-5>", self._on_wheel_down)
+        # Windows / macOS mouse wheel
+        self.bind_all("<MouseWheel>", self._on_mousewheel)
+
+    def _unbind_mousewheel(self, _event=None):
+        try:
+            self.unbind_all("<Button-4>")
+            self.unbind_all("<Button-5>")
+            self.unbind_all("<MouseWheel>")
+        except Exception:
+            pass
+
+    def _on_wheel_up(self, _event):
+        self.canvas.yview_scroll(-2, "units")
+
+    def _on_wheel_down(self, _event):
+        self.canvas.yview_scroll(2, "units")
+
+    def _on_mousewheel(self, event):
+        if event.delta:
+            self.canvas.yview_scroll(-int(event.delta / 60), "units")
 
 
 class PrimaryButton(tk.Button):
