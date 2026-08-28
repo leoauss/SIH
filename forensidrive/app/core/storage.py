@@ -98,10 +98,13 @@ def _drive_from_node(node: dict) -> Drive:
             partitions.append(_partition_from_node(child))
         elif child.get("children"):
             partitions.append(_partition_from_node(child))
+    model = (node.get("model") or "").strip()
+    if not model and (node.get("type") or "").lower() == "loop":
+        model = "Virtual Disk (Loop)"
     return Drive(
         name=node.get("name") or node.get("kname") or "",
         path=_node_path(node),
-        model=(node.get("model") or "").strip(),
+        model=model,
         vendor=(node.get("vendor") or "").strip(),
         size_bytes=size_bytes,
         size_label=format_size(size_bytes),
@@ -212,9 +215,11 @@ def list_drives() -> List[Drive]:
     drives = []
     for node in payload.get("blockdevices") or []:
         node_type = (node.get("type") or "").lower()
+        size_bytes = _as_int(node.get("size"))
         if node_type in SKIP_TYPES:
             continue
-        if node_type != "disk":
+        # Include real disks and active loop devices with non-zero size
+        if node_type != "disk" and not (node_type == "loop" and size_bytes > 0):
             continue
         drives.append(_drive_from_node(node))
     return drives

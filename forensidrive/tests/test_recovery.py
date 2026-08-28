@@ -1,4 +1,4 @@
-﻿import os
+import os
 import sys
 import tempfile
 import unittest
@@ -37,7 +37,7 @@ class RecoveryTests(unittest.TestCase):
             method = get_method("foremost_common")
         drive = Drive(name="sdc", path="/dev/sdc")
         argv = build_command(method, drive, "/tmp/out")
-        self.assertEqual(argv, ["foremost", "-i", "/dev/sdc", "-o", "/tmp/out"])
+        self.assertEqual(argv, ["foremost", "-t", "all", "-i", "/dev/sdc", "-o", "/tmp/out"])
 
     def test_classifier_png(self):
         with tempfile.NamedTemporaryFile(suffix=".png", delete=False) as f:

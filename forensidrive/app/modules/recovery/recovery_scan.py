@@ -1,4 +1,4 @@
-﻿import threading
+import threading
 import tkinter as tk
 from tkinter import ttk
 
@@ -145,6 +145,14 @@ class RecoveryScanView(tk.Frame):
         self.banner.show("Analyzing file magic headers and integrity...", "info")
 
         def worker():
+            # Ensure permissions allow standard desktop users to view recovered artifacts
+            if os.name != "nt":
+                try:
+                    import subprocess
+                    subprocess.run(["chmod", "-R", "a+rX", dest], check=False)
+                except Exception:
+                    pass
+
             report = classify_directory(dest)
             dest_hashes = hash_destination_tree(dest)
             coc_path = write_chain_of_custody(

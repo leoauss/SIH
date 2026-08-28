@@ -85,8 +85,8 @@ def build_command(method: RecoveryMethod, drive: Drive, destination: str, partit
             dest,
             "/cmd",
             source,
-            "partition_none,options,mode,fileopt,search",
+            "search",
         ]
     if method.id == "foremost_common":
-        return ["foremost", "-i", source, "-o", destination]
+        return ["foremost", "-t", "all", "-i", source, "-o", destination]
     raise RuntimeError("No command is defined for recovery method %s" % method.id)
