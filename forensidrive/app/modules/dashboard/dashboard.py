@@ -24,9 +24,11 @@ class DashboardView(tk.Frame):
 
         actions = [
             ("Recover Files", "Look for files that may still be on a drive.", self.app.show_recovery, False),
-            ("Erase Data", "Remove information from a drive. This can be permanent.", self.app.show_erasure, True),
+            ("Erase Drive", "Remove all information from a drive. Supports NIST 800-88, DoD 5220.22-M.", self.app.show_erasure, True),
+            ("Erase Files & Folders", "Permanently delete specific files or folders and remove their traces.", self.app.show_file_eraser, True),
             ("Inspect Drive", "See which drives are connected and what they contain.", self.app.show_inspection, False),
             ("System Information", "See basic information about this computer and ForensiDrive.", self.app.show_system_info, False),
+            ("View Audit Log", "See a record of all operations and generate forensic reports.", self.app.show_audit, False),
         ]
         for title, summary, command, danger in actions:
             card = tk.Frame(self, bg=Theme.SURFACE)

@@ -19,6 +19,7 @@ LSBLK_COLUMNS = [
     "TYPE",
     "RM",
     "RO",
+    "ROTA",
     "FSTYPE",
     "MOUNTPOINT",
     "LABEL",
@@ -108,6 +109,7 @@ def _drive_from_node(node: dict) -> Drive:
         read_only=_truthy(node.get("ro")),
         transport=(node.get("tran") or "").strip(),
         serial=(node.get("serial") or "").strip(),
+        rota=_truthy(node.get("rota", True)),  # default True (HDD) if absent
         partitions=partitions,
     )
 

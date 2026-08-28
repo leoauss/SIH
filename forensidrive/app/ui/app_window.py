@@ -7,6 +7,8 @@ from modules.dashboard.dashboard import DashboardView
 from modules.erasure.erasure import ErasureView
 from modules.inspection.inspection import InspectionView
 from modules.recovery.recovery import RecoveryView
+from modules.file_eraser.file_eraser import FileEraserView
+from modules.audit.audit_view import AuditView
 from ui.navigation import Navigation
 from ui.theme import Theme, apply
 
@@ -47,6 +49,8 @@ class AppWindow:
         self.nav.register("inspection", lambda parent, **kw: InspectionView(parent, self, **kw))
         self.nav.register("recovery", lambda parent, **kw: RecoveryView(parent, self, **kw))
         self.nav.register("erasure", lambda parent, **kw: ErasureView(parent, self, **kw))
+        self.nav.register("file_eraser", lambda parent, **kw: FileEraserView(parent, self, **kw))
+        self.nav.register("audit", lambda parent: AuditView(parent, self))
         self.show_dashboard()
 
         self.root.bind("<Escape>", self._maybe_exit_fullscreen)
@@ -78,6 +82,12 @@ class AppWindow:
 
     def show_erasure(self):
         self.nav.show("erasure")
+
+    def show_file_eraser(self):
+        self.nav.show("file_eraser")
+
+    def show_audit(self):
+        self.nav.show("audit")
 
     def show_system_info(self):
         from modules.dashboard.dashboard import SystemInfoView

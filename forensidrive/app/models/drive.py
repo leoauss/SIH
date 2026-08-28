@@ -18,6 +18,7 @@ class Drive:
     read_only: bool = False
     transport: str = ""
     serial: str = ""
+    rota: bool = True          # True = HDD (rotational), False = SSD/NVMe
     partitions: List[Partition] = field(default_factory=list)
 
     def display_title(self) -> str:
@@ -40,6 +41,19 @@ class Drive:
         if self.transport.lower() == "usb" or self.removable:
             return "This looks like a drive that can be unplugged."
         return "This looks like a drive inside the computer."
+
+    def is_ssd(self) -> bool:
+        """Return True if this drive appears to be solid-state (non-rotational)."""
+        if not self.rota:
+            return True
+        transport = self.transport.lower()
+        return transport in ("nvme", "mmc")
+
+    def recommended_erase_standard(self) -> str:
+        """Return the method ID most suitable for this drive type."""
+        if self.is_ssd():
+            return "blkdiscard_discard"
+        return "dod_3pass"
 
     def partition_by_path(self, path: str) -> Optional[Partition]:
         for partition in self.partitions:
